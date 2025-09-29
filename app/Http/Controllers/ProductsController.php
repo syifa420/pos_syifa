@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Products;//untuk memanggil model categories
+use App\Products;//untuk memanggil model products
+use App\Categories;//untuk memanggil model Categories
 
-class CategoriesController extends Controller
+class ProductsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +15,8 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-      $categories = Categories::all();
-      return view('categories.index', compact('categories')); 
+      $products = Products::all();
+      return view('products.index', compact('products')); 
     }
 
     /**
@@ -25,7 +26,8 @@ class CategoriesController extends Controller
      */
     public function create()
     {
-       return view('categories.create');
+       $categories = Categories::all();
+       return view('products.create', compact('categories'));
     }
 
     /**
@@ -37,17 +39,32 @@ class CategoriesController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255|unique:categories',
-            'description' => 'nullable|string',
+            'name'         => 'required|string|max:255|',
+            'description'  => 'nullable|string',
+            'price'        => 'required|numberic|min:0',
+            'stok'         => 'required|integer|min:0',
+            'image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'status'       => 'required|in:available,unavailable',
+            'categorie_id' => 'required',
         ]);
 
-        Categories::create([
-            'name' => $request->name,
-            'description' => $request->description
+        $image = null;
+
+        if($request->hasFile('image')){
+            $image = $request->file('image')->store('products', 'public');
+        }
+
+        Products::create([
+            'name'         => $request->name,
+            'description'  => $request->description,
+            'price'        => $request->price,
+            'stock'        => $request->stock
+            'image'        => $image,
+            'status'       => $request->status,
+            'categorie_id' => $request->categorie_id,
         ]);
-        
-        return redirect()->route('category.index');
-    }
+
+        return redirect()->route('products.index');
 
     /**
      * Display the specified resource.
@@ -68,8 +85,7 @@ class CategoriesController extends Controller
      */
     public function edit($id)
     {
-        $dataeditcategory = Categories::find($id);
-        return view('categories.edit', compact('dataeditcategory'));
+        
     }
 
     /**
@@ -81,18 +97,6 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,' . $id . ',categorie_id',
-            'description' => 'nullable|string',
-        ]);
-        
-        $updatedata = Categories::findOrFail($id);
-        $updatedata->update([
-            'name' => $request->name,
-            'description' => $request->description
-        ]);    
-        
-        return redirect()->route('category.index');
         
     }
 
@@ -104,7 +108,7 @@ class CategoriesController extends Controller
      */
     public function destroy($id)
     {
-        Categories::where('categorie_id', $id)->delete();
-        return redirect()->route('category.index');
+        
     }
 }
+

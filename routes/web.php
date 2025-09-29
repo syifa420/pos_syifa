@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoriesController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CustomersController;
+use App\Http\Controllers\ProductsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,3 +47,23 @@ Route::get('/customers/{id}/edit', [CustomersController::class, 'edit'])->name('
 Route::put('/customers/{id}', [CustomersController::class, 'update'])->name('customer.update');
 //Hpus kategori 
 Route::delete('/customers/{id}', [CustomersController::class, 'destroy'])->name('customer.destroy');
+
+
+// Customers routes
+//Tanmpilkan semua pelanggan
+Route::get('/customers', [CustomersController::class, 'index'])->name('customer.index');
+//Form tambah kategori
+Route::get('/customer/create', [CustomersController::class, 'create'])->name('customer.create');
+//simpan kategori baru
+Route::post('/customers', [CustomersController::class, 'store'])->name('customer.store');
+//Foerm edit kategori baru
+Route::get('/customers/{id}/edit', [CustomersController::class, 'edit'])->name('customer.edit');
+//Update kategori
+Route::put('/customers/{id}', [CustomersController::class, 'update'])->name('customer.update');
+//Hpus kategori 
+Route::delete('/customers/{id}', [CustomersController::class, 'destroy'])->name('customer.destroy');
+
+// Products routes
+Route::get('/products', [ProductsController::class, 'index'])->name('products.index');
+Route::get('/products', [ProductsController::class, 'create'])->name('products.create');
+Route::post('/products', [ProductsController::class, 'store'])->name('products.store');
